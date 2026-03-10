@@ -35,7 +35,8 @@
                     Dashboard
                 </a>
 
-                {{-- GRUP: ADMINISTRATOR (HANYA UNTUK ABANG) --}}
+                {{-- GRUP: ADMINISTRATOR --}}
+                @if(auth()->user()->role == 'super_admin')
                 <div class="px-4 mt-6 mb-2 text-[10px] font-black text-rose-500 uppercase tracking-widest">Administrator</div>
                 
                 <a href="{{ route('admin.users.index') }}" 
@@ -49,6 +50,7 @@
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" /></svg>
                     <span class="font-bold">Setting Banner</span>
                 </a>
+                @endif
 
                 {{-- GRUP: MANAJEMEN KONTEN --}}
                 <div class="px-4 mt-6 mb-2 text-[10px] font-black text-slate-500 uppercase tracking-widest">Konten Web</div>
@@ -79,6 +81,14 @@
 
                 {{-- GRUP: LAPORAN --}}
                 <div class="px-4 mt-6 mb-2 text-[10px] font-black text-slate-500 uppercase tracking-widest">Laporan & Statistik</div>
+
+                <a href="{{ route('admin.kunjungan.index') }}" 
+                class="flex items-center gap-3 px-4 py-3 rounded-xl transition {{ request()->routeIs('admin.kunjungan.*') ? 'bg-indigo-600 text-white shadow-lg' : 'hover:bg-slate-800 text-slate-400 hover:text-white' }}">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+                    </svg>
+                    Buku Tamu
+                </a>
 
                 <a href="{{ route('admin.survei.index') }}" 
                    class="flex items-center gap-3 px-4 py-3 rounded-xl transition {{ request()->routeIs('admin.survei.*') ? 'bg-indigo-600 text-white shadow-lg' : 'hover:bg-slate-800 text-slate-400 hover:text-white' }}">
@@ -148,5 +158,6 @@
             })
         }
     </script>
+    @stack('scripts')
 </body>
 </html>

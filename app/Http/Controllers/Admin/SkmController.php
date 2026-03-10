@@ -113,7 +113,7 @@ class SkmController extends Controller
         ];
 
         $pdf = \PDF::loadView('admin.skm.cetak_pdf', $data);
-        return $pdf->download('Laporan_SKM_Pustaka_Cendil.pdf');
+        return $pdf->setPaper('a4', 'portrait')->download('Laporan_SKM_Pustaka_Cendil.pdf');
     }
     
     // 4. Tampilan Tabel untuk Admin
