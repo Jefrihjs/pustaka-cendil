@@ -131,7 +131,8 @@
             
                     {{-- TANGGAL --}}
                     <span class="text-[11px] text-slate-400">
-                        {{ $post->created_at->locale('id')->isoFormat('dddd, DD/MM/YYYY') }} | {{ $post->created_at->format('H:i') }} WIB
+                        {{ $post->created_at->timezone('Asia/Jakarta')->locale('id')->isoFormat('dddd, DD/MM/YYYY') }} |
+                        {{ $post->created_at->timezone('Asia/Jakarta')->format('H:i') }} WIB
                     </span>
                 </div>
             </div>

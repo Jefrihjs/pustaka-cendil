@@ -34,7 +34,7 @@
                     <tr class="hover:bg-slate-50 transition-colors">
                         <td class="px-6 py-5">
                             <div class="flex items-center gap-4">
-                                {{-- Thumbnail Kecil (PERBAIKAN DI SINI) --}}
+                                {{-- Thumbnail Kecil --}}
                                 <div class="w-16 h-12 rounded-xl bg-slate-100 overflow-hidden flex-shrink-0 border border-slate-200 shadow-sm">
                                     @if($post->images && $post->images->count() > 0)
                                         <img src="{{ asset('storage/' . $post->images->first()->path) }}" 
@@ -58,7 +58,7 @@
                             </div>
                         </td>
                         <td class="px-6 py-5 text-center">
-                            @if($post->status == 'publish' || !$post->status) {{-- Default ke publish jika status null --}}
+                            @if($post->status == 'publish' || !$post->status) {{-- Default --}}
                                 <span class="px-3 py-1 bg-emerald-50 text-emerald-600 rounded-lg text-[10px] font-black uppercase border border-emerald-100">Diterbitkan</span>
                             @else
                                 <span class="px-3 py-1 bg-slate-100 text-slate-500 rounded-lg text-[10px] font-black uppercase border border-slate-200">Draft</span>
@@ -66,8 +66,12 @@
                         </td>
                         <td class="px-6 py-5">
                             <div class="flex flex-col">
-                                <span class="text-xs font-bold text-slate-600">{{ $post->created_at->format('d M Y') }}</span>
-                                <span class="text-[10px] text-slate-400">{{ $post->created_at->format('H:i') }} WIB</span>
+                                <span class="text-xs font-bold text-slate-600">
+                                    {{ $post->created_at->timezone('Asia/Jakarta')->format('d M Y') }}
+                                </span>
+                                <span class="text-[10px] text-slate-400">
+                                    {{ $post->created_at->timezone('Asia/Jakarta')->format('H:i') }} WIB
+                                </span>
                             </div>
                         </td>
                         <td class="px-6 py-5 text-center">

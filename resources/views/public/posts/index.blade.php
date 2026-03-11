@@ -47,7 +47,8 @@
 
                     <div class="absolute top-6 left-6">
                         <span class="px-4 py-2 bg-white/90 backdrop-blur-md text-[10px] font-black rounded-xl uppercase tracking-widest text-slate-800 shadow-xl">
-                            {{ $post->created_at->translatedFormat('d M Y') }} | {{ $post->created_at->format('H:i') }} WIB
+                            {{ $post->created_at->timezone('Asia/Jakarta')->translatedFormat('d M Y') }} |
+                            {{ $post->created_at->timezone('Asia/Jakarta')->format('H:i') }} WIB
                         </span>
                     </div>
                 </div>
