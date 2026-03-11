@@ -51,7 +51,7 @@
         <div class="swiper-pagination !bottom-8"></div>
     </div>
 
-    {{-- Tombol Daftar Anggota Tetap Ada --}}
+    {{-- Tombol Daftar Anggota --}}
     <div class="absolute bottom-12 right-6 lg:right-12 z-30 animate-bounce">
         <a href="{{ url('/daftar-anggota') }}" class="flex items-center gap-3 px-8 py-4 bg-emerald-600 hover:bg-emerald-500 text-white rounded-2xl font-black shadow-2xl shadow-emerald-900/50 transition-all active:scale-95 group">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" /></svg>
@@ -109,37 +109,45 @@
     <div class="swiper-wrapper">
         @foreach($posts as $post)
         <div class="swiper-slide h-auto">
-            {{-- Container Utama: Kita kasih padding bawah kecil (pb-2) saja --}}
+            {{-- Container Utama --}}
             <div class="flex flex-col h-full bg-white group pb-2">
                 
-                {{-- GAMBAR: Pakai aspect-video (16:9) biar lebih ceper dari 4:3 --}}
+                {{-- GAMBAR --}}
                 <div class="aspect-video rounded-xl overflow-hidden mb-3 shadow-sm">
                     <img src="{{ asset('storage/' . ($post->images->first()->path ?? 'default.jpg')) }}" 
                          class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                 </div>
 
                 <div class="flex flex-col px-1">
-                    {{-- JUDUL: Font size dikecilkan dikit (text-base), mb mepet --}}
+                    {{-- JUDUL --}}
                     <h3 class="text-base font-bold text-teal-900 leading-snug mb-1.5 line-clamp-2 hover:text-teal-700">
                         <a href="/berita/{{ $post->slug }}">{{ $post->judul }}</a>
                     </h3>
                     
-                    {{-- INFO LOKASI: Mepet ke judul --}}
+                    {{-- INFO LOKASI --}}
                     <p class="text-[12px] text-slate-500 mb-0.5 font-medium">
                         {{ $post->lokasi ?? 'Manggar' }}
                     </p>
-                    
-                    {{-- TANGGAL: Ukuran kecil, tanpa margin bawah tambahan --}}
+            
+                    {{-- TANGGAL --}}
                     <span class="text-[11px] text-slate-400">
-                        {{ $post->created_at->locale('id')->isoFormat('dddd, DD/MM/YYYY') }}
+                        {{ $post->created_at->locale('id')->isoFormat('dddd, DD/MM/YYYY') }} | {{ $post->created_at->format('H:i') }} WIB
                     </span>
                 </div>
             </div>
         </div>
         @endforeach
     </div>
+    <div class="mt-12 text-center">
+        <a href="{{ route('public.posts.index') }}" class="inline-flex items-center gap-2 px-8 py-4 bg-white border-2 border-slate-100 text-slate-700 font-black rounded-2xl hover:bg-slate-50 hover:border-blue-200 hover:text-blue-600 transition-all group shadow-sm">
+            Baca Berita Lainnya
+            <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+            </svg>
+        </a>
+    </div>
     
-    {{-- PAGINATION: Pakai mt-4 (bukan mt-10) biar nggak jauh dari berita --}}
+    {{-- PAGINATION --}}
     <div class="swiper-pagination !static mt-4"></div>
 </div>
     </div>

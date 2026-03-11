@@ -1,76 +1,106 @@
 @extends('layouts.public')
 
 @section('content')
-{{-- 1. HERO CAROUSEL (BANNER BERANDA) --}}
-<section class="relative h-[500px] md:h-[700px] bg-slate-900 overflow-hidden" 
-    x-data="{ 
-        activeSlide: 0, 
-        slides: {{ $banners->count() }},
-        next() { this.activeSlide = (this.activeSlide + 1) % this.slides },
-        prev() { this.activeSlide = (this.activeSlide - 1 + this.slides) % this.slides },
-        loop() { setInterval(() => { this.next() }, 5000) }
-    }" 
-    x-init="loop()">
-
-    {{-- Item Slide --}}
-    @foreach($banners as $index => $banner)
-    <div x-show="activeSlide === {{ $index }}" 
-         x-transition:enter="transition duration-1000 ease-out"
-         x-transition:enter-start="opacity-0 scale-110"
-         x-transition:enter-end="opacity-100 scale-100"
-         x-transition:leave="transition duration-1000 ease-in"
-         x-transition:leave-start="opacity-100 scale-100"
-         x-transition:leave-end="opacity-0 scale-90"
-         class="absolute inset-0">
+<div class="bg-slate-50 min-h-screen">
+    <div class="max-w-7xl mx-auto px-6 py-16">
         
-        {{-- Gambar Banner --}}
-        <img src="{{ asset('storage/' . $banner->file_path) }}" 
-             class="w-full h-full object-cover opacity-60 transition-transform duration-[5000ms]"
-             :class="activeSlide === {{ $index }} ? 'scale-110' : 'scale-100'">
-
-        {{-- Overlay Text --}}
-        <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/20 flex items-center">
-            <div class="container mx-auto px-6 lg:px-20">
-                <div class="max-w-4xl">
-                    <span class="inline-block px-4 py-1.5 bg-blue-600 text-white text-[10px] font-black uppercase tracking-[0.2em] rounded-full mb-6 shadow-lg shadow-blue-600/30">Sorotan Utama</span>
-                    <h2 class="text-4xl md:text-7xl font-black text-white leading-[1.1] mb-8 drop-shadow-2xl">
-                        {{ $banner->caption }}
-                    </h2>
-                    <div class="flex gap-4">
-                        <a href="{{ route('public.gallery.index') }}" class="px-8 py-4 bg-white text-slate-900 rounded-2xl font-black uppercase text-sm hover:bg-blue-600 hover:text-white transition-all shadow-xl active:scale-95">Lihat Galeri</a>
-                    </div>
+        {{-- Header Halaman --}}
+        <div class="mb-16 text-center lg:text-left flex flex-col lg:flex-row lg:items-end justify-between gap-6 border-b border-slate-200 pb-12">
+            <div>
+                <div class="inline-block px-4 py-1.5 bg-rose-50 text-rose-600 text-[10px] font-black rounded-full uppercase tracking-[0.3em] mb-4">
+                    Pustaka Cendil Update
+                </div>
+                <h1 class="text-4xl md:text-5xl font-black text-slate-800 tracking-tight">
+                    Arsip <span class="text-rose-600">Berita</span> & Kegiatan
+                </h1>
+                <p class="mt-4 text-slate-500 text-lg max-w-2xl font-medium leading-relaxed">
+                    Menyajikan jejak langkah, inovasi, dan dokumentasi seluruh aktivitas Pustaka Cendil Tige Kubok untuk masyarakat.
+                </p>
+            </div>
+            
+            {{-- Search Bar Sederhana --}}
+            <div class="relative w-full lg:w-96">
+                <input type="text" placeholder="Cari berita..." class="w-full bg-white border-2 border-slate-100 rounded-2xl py-4 px-6 outline-none focus:border-rose-500 transition-all shadow-sm font-medium">
+                <div class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
                 </div>
             </div>
         </div>
-    </div>
-    @endforeach
 
-    {{-- Navigasi Manual (Kiri-Kanan) --}}
-    @if($banners->count() > 1)
-    <div class="absolute inset-x-0 bottom-0 flex justify-between p-10 items-center z-20">
-        {{-- Indicator Dots --}}
-        <div class="flex gap-3">
-            <template x-for="i in slides" :key="i">
-                <button @click="activeSlide = i-1" 
-                    :class="activeSlide === i-1 ? 'w-12 bg-blue-500' : 'w-3 bg-white/30 hover:bg-white/60'"
-                    class="h-3 rounded-full transition-all duration-500"></button>
-            </template>
-        </div>
-        
-        <div class="flex gap-4">
-            <button @click="prev()" class="p-4 bg-white/10 backdrop-blur-md text-white rounded-2xl hover:bg-white hover:text-slate-900 transition-all">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M15 19l-7-7 7-7"/></svg>
-            </button>
-            <button @click="next()" class="p-4 bg-white/10 backdrop-blur-md text-white rounded-2xl hover:bg-white hover:text-slate-900 transition-all">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M9 5l7 7-7 7"/></svg>
-            </button>
-        </div>
-    </div>
-    @endif
-</section>
+        {{-- Grid Berita --}}
+        @if($posts->count() > 0)
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+            @foreach($posts as $post)
+            <div class="group bg-white rounded-[2.5rem] border border-slate-200 overflow-hidden hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 flex flex-col">
+                
+                {{-- Foto Berita --}}
+                <div class="aspect-[4/3] overflow-hidden relative bg-slate-100">
+                     {{ $post->gambar }}
+                   @if($post->images->first())
+                    <img src="{{ asset('storage/'.$post->images->first()->path) }}"
+                        class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                        alt="{{ $post->judul }}">
+                    @else
+                    <img src="{{ asset('images/logo-pustaka.png') }}"
+                        class="w-full h-full object-cover">
+                    @endif
 
-{{-- 2. KONTEN BERITA (Gunakan kode Abang di bawah ini) --}}
-<div class="bg-slate-50 py-16">
-    ... (Lanjutannya isi grid berita yang Abang kirim tadi) ...
+                    <div class="absolute top-6 left-6">
+                        <span class="px-4 py-2 bg-white/90 backdrop-blur-md text-[10px] font-black rounded-xl uppercase tracking-widest text-slate-800 shadow-xl">
+                            {{ $post->created_at->translatedFormat('d M Y') }} | {{ $post->created_at->format('H:i') }} WIB
+                        </span>
+                    </div>
+                </div>
+
+                {{-- Konten --}}
+                <div class="p-8 flex flex-col flex-1">
+                    {{-- Ganti title ke judul --}}
+                    <h3 class="text-xl font-bold text-slate-800 mb-4 group-hover:text-rose-600 transition-colors line-clamp-2 leading-snug">
+                        {{ $post->judul }}
+                    </h3>
+                    {{-- Ganti content ke konten --}}
+                    <p class="text-slate-500 text-sm leading-relaxed mb-8 line-clamp-3 font-medium">
+                        {{ Str::limit(strip_tags($post->konten), 120) }}
+                    </p>
+                    
+                    <div class="mt-auto pt-6 border-t border-slate-50 flex items-center justify-between">
+                        <a href="{{ route('public.posts.show', $post->slug) }}" class="inline-flex items-center gap-2 text-rose-600 font-black text-[10px] uppercase tracking-[0.2em] group/btn">
+                            Baca Selengkapnya
+                            <svg class="w-4 h-4 group-hover/btn:translate-x-2 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            @endforeach
+        </div>
+
+        {{-- Pagination --}}
+        <div class="mt-20 flex justify-center custom-pagination">
+            {{ $posts->links() }}
+        </div>
+
+        @else
+        {{-- Jika Berita Kosong --}}
+        <div class="py-20 text-center bg-white rounded-[3rem] border-2 border-dashed border-slate-200">
+            <div class="bg-slate-50 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6 text-slate-300">
+                <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>
+            </div>
+            <p class="text-slate-400 font-bold uppercase tracking-widest text-xs">Belum ada berita yang diterbitkan.</p>
+        </div>
+        @endif
+    </div>
 </div>
+
+{{-- Tambahkan Style CSS Khusus Pagination --}}
+<style>
+    .custom-pagination nav svg { width: 24px; }
+    .custom-pagination nav div:first-child { display: none; } /* Sembunyikan text showing result di mobile */
+    .custom-pagination nav span, .custom-pagination nav a {
+        border-radius: 12px !important;
+        margin: 0 4px !important;
+        border: none !important;
+        font-weight: 800 !important;
+        padding: 10px 18px !important;
+    }
+</style>
 @endsection

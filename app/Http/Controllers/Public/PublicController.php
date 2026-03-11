@@ -59,9 +59,10 @@ class PublicController extends Controller
      */
     public function allPosts()
     {
-        $posts = Post::where('status', 'publish')
-                    ->latest()
-                    ->paginate(9); 
+        $posts = Post::with('images')
+                ->where('status','publish')
+                ->latest()
+                ->paginate(9); 
 
         return view('public.posts.index', compact('posts'));
     }

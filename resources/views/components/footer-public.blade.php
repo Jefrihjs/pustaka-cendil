@@ -60,11 +60,11 @@
             <div class="lg:pl-10">
                 <h4 class="text-white font-bold mb-6 uppercase text-xs tracking-widest">Akses Cepat</h4>
                 <ul class="space-y-4 text-sm font-medium">
+                    <li><a href="/berita" class="hover:text-blue-500 transition-colors">Berita</a></li>
                     <li><a href="/profil" class="hover:text-blue-500 transition-colors">Profil Singkat</a></li>
                     <li><a href="/kegiatan" class="hover:text-blue-500 transition-colors">Program Inovasi</a></li>
                     <li><a href="/pegawai" class="hover:text-blue-500 transition-colors">Struktur Pegawai</a></li>
                     <li><a href="/koleksi" class="hover:text-blue-500 transition-colors">Katalog Koleksi</a></li>
-                    <li><a href="/kontak" class="hover:text-blue-500 transition-colors">Lokasi & Kontak</a></li>
                 </ul>
             </div>
 
