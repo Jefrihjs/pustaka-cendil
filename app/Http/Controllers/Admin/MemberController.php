@@ -6,12 +6,12 @@ use App\Http\Controllers\Controller;
 use App\Models\Member;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon; // Carbon sudah benar di sini
 
 class MemberController extends Controller
 {
     public function dashboard()
     {
-        // Hitung data untuk statistik
         $totalMembers = Member::count();
         $activeMembers = Member::where('status', 'aktif')->count();
         $inactiveMembers = Member::where('status', 'nonaktif')->count();
@@ -36,13 +36,11 @@ class MemberController extends Controller
 
     public function edit(Member $member)
     {
-        // Menampilkan halaman edit dengan data anggota tertentu
         return view('admin.members.edit', compact('member'));
     }
 
     public function update(Request $request, Member $member)
     {
-        // Validasi data yang masuk
         $validated = $request->validate([
             'nama' => 'required|string|max:255',
             'kategori_pekerjaan' => 'required',
@@ -51,20 +49,15 @@ class MemberController extends Controller
             'alamat_rumah' => 'nullable|string',
         ]);
 
-        // Update data ke database
         $member->update($request->all());
 
-        // Kembali ke index dengan pesan sukses
         return redirect()->route('admin.members.index')
             ->with('success', 'Data ' . $member->nama . ' berhasil diperbarui!');
     }
 
     public function activate(Member $member)
     {
-        $member->update([
-            'status' => 'aktif'
-        ]);
-
+        $member->update(['status' => 'aktif']);
         return back()->with('success', 'Anggota berhasil diaktifkan');
     }
 
@@ -75,26 +68,44 @@ class MemberController extends Controller
 
     public function store(Request $request)
     {
-        // Sebaiknya tambahkan validasi di sini jika diperlukan
-        Member::create($request->all());
+        $data = $request->all();
+
+        // 1. LOGIKA KODE OTOMATIS (Sudah aman)
+        $tahun = date('Y');
+        $lastMember = Member::where('kode_anggota', 'like', 'AGT-' . $tahun . '-%')->latest()->first();
+        $noUrut = $lastMember ? (int) substr($lastMember->kode_anggota, -4) + 1 : 1;
+        $data['kode_anggota'] = 'AGT-' . $tahun . '-' . str_pad($noUrut, 4, '0', STR_PAD_LEFT);
+
+        // 2. KONVERSI TANGGAL LAHIR (Sudah aman)
+        if ($request->filled('tanggal_lahir')) {
+            try {
+                $data['tanggal_lahir'] = \Carbon\Carbon::createFromFormat('d-m-Y', $request->tanggal_lahir)->format('Y-m-d');
+            } catch (\Exception $e) {
+                $data['tanggal_lahir'] = \Carbon\Carbon::parse($request->tanggal_lahir)->format('Y-m-d');
+            }
+        }
+
+        // 3. ISI TANGGAL DAFTAR (Penyakit yang sekarang)
+        // Kita set tanggal hari ini sebagai tanggal daftar
+        $data['tanggal_daftar'] = now(); 
+
+        // 4. Set status default
+        $data['status'] = $data['status'] ?? 'pending';
+
+        // 5. SIMPAN
+        Member::create($data);
 
         return redirect()->route('admin.members.index')
-            ->with('success', 'Anggota berhasil ditambahkan');
+            ->with('success', 'Anggota ' . $data['nama'] . ' berhasil terdaftar dengan kode ' . $data['kode_anggota']);
     }
 
     public function destroy(Member $member)
     {
-        // Menghapus data dari database
         $member->delete();
-
-        // Kembali ke halaman daftar dengan pesan sukses
         return redirect()->route('admin.members.index')
             ->with('success', 'Data anggota berhasil dihapus');
     }
 
-    /**
-     * Cetak Kartu Anggota (PDF)
-     */
     public function print(Member $member)
     {
         $pdf = Pdf::loadView('admin.members.print', compact('member'))
@@ -103,14 +114,10 @@ class MemberController extends Controller
         return $pdf->stream('Kartu-' . $member->nama . '.pdf');
     }
 
-    /**
-     * Cetak Formulir Pendaftaran (PDF)
-     */
     public function printForm(Member $member)
     {
-        // Menggunakan DomPDF untuk render formulir pendaftaran fisik
         $pdf = Pdf::loadView('admin.members.print_form', compact('member'))
-                  ->setPaper('a4', 'portrait'); // Standar kertas A4 untuk formulir
+                  ->setPaper('a4', 'portrait'); 
 
         return $pdf->stream('Formulir-' . $member->nama . '.pdf');
     }

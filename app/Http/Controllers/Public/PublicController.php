@@ -86,4 +86,5 @@ class PublicController extends Controller
 
         return view('public.gallery.index', compact('photos', 'videos'));
     }
+    
 }

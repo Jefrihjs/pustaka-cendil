@@ -11,9 +11,7 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        // JALUR SAKTI LARAVEL 11:
-        // Paksa semua user yang sudah login (Authenticated) untuk diarahkan ke /admin
-        // dan paksa tamu (Guest) yang belum login diarahkan ke /login
+        
         $middleware->redirectTo(
             guests: '/login',
             users: '/admin'
